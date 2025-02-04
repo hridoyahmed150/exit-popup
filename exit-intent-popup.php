@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EMG Exit Intent Popup
  * Description: A plugin to show an exit-intent popup with an address form.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Hridoy Ahmed
  * License: GPL2
  */
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 function exit_intent_popup_enqueue_scripts()
 {
-    $custom_content = get_option('exit_intent_custom_content');
+    // $custom_content = get_option('exit_intent_custom_content');
     $exclude_page = get_option('exclude_page');
     $current_page_id = get_the_ID();
 
@@ -24,10 +24,8 @@ function exit_intent_popup_enqueue_scripts()
 
 
         wp_enqueue_script('exit-intent-popup-js', plugin_dir_url(__FILE__) . 'assets/js/popup.js', array(), null, true);
-        // wp_enqueue_script('wp-color-picker');
-
     }
-    // Localize settings
+
     $redirect_url = get_option('exit_intent_redirect_url', '/contact-us/');
     wp_localize_script('exit-intent-popup-js', 'exitIntentPopupSettings', array(
         'enablePopup' => get_option('exit_intent_enable_popup', '1'),
@@ -36,14 +34,14 @@ function exit_intent_popup_enqueue_scripts()
 
 
 
-    if ($exclude_page != $current_page_id) {
-        $google_maps_api_key = get_option('exit_intent_google_maps_api_key');
-        $general_api_key = function_exists('emg_cmb2_get_general') ? emg_cmb2_get_general('general_api_key') : null;
+    // if ($exclude_page != $current_page_id) {
+    //     $google_maps_api_key = get_option('exit_intent_google_maps_api_key');
+    //     $general_api_key = function_exists('emg_cmb2_get_general') ? emg_cmb2_get_general('general_api_key') : null;
 
-        if ($google_maps_api_key || $general_api_key) {
-            wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places', [], null, true);
-        }
-    }
+    //     if ($google_maps_api_key || $general_api_key) {
+    //         wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places', [], null, true);
+    //     }
+    // }
 }
 add_action('wp_enqueue_scripts', 'exit_intent_popup_enqueue_scripts');
 
