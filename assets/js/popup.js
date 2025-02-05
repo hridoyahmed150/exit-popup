@@ -29,41 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!enablePopup) {
     return; // Exit if popup is disabled
   }
-  let autocomplete2;
-
-  var componentForm = {
-    street_number: "short_name",
-    route: "short_name", // street name
-    locality: "short_name", // city
-    administrative_area_level_1: "short_name", // state
-    country: "long_name",
-    postal_code: "short_name",
-  };
-
-  function initAutocomplete() {
-    autocomplete = new google.maps.places.Autocomplete(
-      document.getElementById("offer_autocomplete_popup"),
-      { types: ["geocode"] }
-    );
-    autocomplete.setFields(["address_component"]);
-    autocomplete.addListener("place_changed", fillInAddress);
-  }
-  function fillInAddress() {
-    var place = autocomplete.getPlace();
-
-    for (var component in componentForm) {
-      document.getElementById(component).value = "";
-      document.getElementById(component).disabled = false;
-    }
-
-    for (var i = 0; i < place.address_components.length; i++) {
-      var addressType = place.address_components[i].types[0]; // street_name, route, etc...
-      if (componentForm[addressType]) {
-        var val = place.address_components[i][componentForm[addressType]];
-        document.getElementById(addressType).value = val;
-      }
-    }
-  }
 
   function showExitIntentPopup() {
     if (!getCookie("emg_exitPopup")) {
@@ -97,8 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
     closeButton.addEventListener("click", closeModal);
   }
 
-  // Trigger form submission
-  // Trigger form submission
   const triggerButton = document.querySelector(".trigger-emg-popup-plugin");
   if (triggerButton) {
     triggerButton.addEventListener("click", function (event) {
@@ -122,10 +85,5 @@ document.addEventListener("DOMContentLoaded", function () {
           .classList.add("field_validation_below");
       }
     });
-  }
-
-  // Initialize Google Maps Autocomplete
-  if (typeof google !== "undefined" && google.maps) {
-    initAutocomplete();
   }
 });
