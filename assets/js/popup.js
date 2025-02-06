@@ -13,21 +13,15 @@ function getCookie(name) {
       return c.substring(nameEQ.length, c.length);
     }
   }
-  return null; // Return null if the cookie is not found
-}
-
-// Delete a cookie
-function deleteCookie(name) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+  return null;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Initialize Google Maps autocomplete functionality'
   const settings = exitIntentPopupSettings || {};
   const enablePopup = settings.enablePopup === "1";
 
   if (!enablePopup) {
-    return; // Exit if popup is disabled
+    return;
   }
 
   function showExitIntentPopup() {
@@ -37,12 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
       popup.style.display = "block";
-      deleteCookie("exitIntentModal");
       setCookie("emg_exitPopup", "true", 365);
     }
   }
 
-  // Close the modal popup
   function closeModal() {
     const popup = document.getElementById("exitIntentPopup");
     popup.style.display = "none";
@@ -53,8 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
       showExitIntentPopup();
     }
   });
-
-  // Close button event
   const closeButton = document.querySelector(
     "#exitIntentPopup .modal-chose-button"
   );
@@ -76,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
       if (offerAutocomplete.length > 0) {
         setTimeout(function () {
           form.classList.remove("popup_working");
-          // submit form here
           form.submit();
         }, 200);
       } else {
