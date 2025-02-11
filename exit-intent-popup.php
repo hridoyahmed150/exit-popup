@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EMG Exit Intent Popup
  * Description: A plugin to show an exit-intent popup with an address form.
- * Version: 1.0.3
+ * Version: 2.1
  * Author: Hridoy Ahmed
  * License: GPL2
  */
@@ -12,31 +12,116 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function exit_intent_popup_settings_init()
+
+add_action('wp_enqueue_scripts', 'emg_eip_enqueue_scripts');
+function emg_eip_enqueue_scripts()
 {
-    register_setting('exit_intent_popup_settings', 'exit_intent_enable_popup');
-    register_setting('exit_intent_popup_settings', 'exit_intent_title', 'wp_kses_post');
-    register_setting('exit_intent_popup_settings', 'exit_intent_custom_content', 'sanitize_textarea_field');
 
+    $is_popup_enable = get_option('exit_intent_enable_popup', '1');
+
+    wp_register_style('emg-exit-intent-popup', plugin_dir_url(__FILE__) . 'assets/css/emg-popup.css');
+    wp_register_script('emg-exit-intent-popup', plugin_dir_url(__FILE__) . 'assets/js/emg-popup.js', array(), null, true);
+
+    if ($is_popup_enable) {
+
+        wp_enqueue_style('emg-exit-intent-popup');
+        wp_enqueue_script('emg-exit-intent-popup');
+
+        wp_localize_script('emg-exit-intent-popup', 'exitIntentPopupData', array(
+            'enablePopup' => get_option('exit_intent_enable_popup', '1'),
+        ));
+    }
 }
-add_action('admin_init', 'exit_intent_popup_settings_init');
 
-function exit_intent_popup_enqueue_scripts()
+
+function emg_eip_output_cb()
 {
     $enable_popup = get_option('exit_intent_enable_popup', '1');
+    $custom_content = get_option('exit_intent_custom_content');
+
     if ($enable_popup !== '1') {
         return;
     }
-    wp_enqueue_style('exit-intent-popup-css', plugin_dir_url(__FILE__) . 'assets/css/popup.css');
+    $title = get_option('exit_intent_title');
+    $allowed_html = [
+        'h1' => [
+            'class' => [],
+        ],
+        'h2' => [
+            'class' => [],
+        ],
+        'h3' => [
+            'class' => [],
+        ],
+        'h4' => [
+            'class' => [],
+        ],
+        'h5' => [
+            'class' => [],
+        ],
+        'h6' => [
+            'class' => [],
+        ],
+        'p' => [
+            'class' => [],
+        ],
+        'div' => [
+            'class' => [],
+            'id' => [],
+        ],
+        'span' => [
+            'class' => [],
+            'style' => [],
+        ],
+        'a' => [
+            'href' => [],
+            'title' => [],
+            'class' => [],
+        ],
+        'strong' => [],
+        'i' => [],
+        'br' => [],
+    ];
+    ?>
 
-    wp_enqueue_script('exit-intent-popup-js', plugin_dir_url(__FILE__) . 'assets/js/popup.js', array(), null, true);
+    <div class="modal emg-eip-modal" id="emgExitIntentPopup">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="modal-close-button" data-dismiss="modal"
+                        aria-label="Close">&#10006;</button>
+                </div>
+                <div class="modal-body">
+                    <?php if ($title || $custom_content): ?>
+                        <div class="emg-modal-for-custom-content">
 
-    wp_localize_script('exit-intent-popup-js', 'exitIntentPopupSettings', array(
-        'enablePopup' => get_option('exit_intent_enable_popup', '1')
-    ));
+                            <div class="emg-eip-title">
+                                <?php echo wp_kses($title, $allowed_html); ?>
+                            </div>
+
+                            <?php echo do_shortcode($custom_content); ?>
+
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+add_action('wp_footer', 'emg_eip_output_cb');
+
+// Initialize the plugin settings
+function emg_eip_dashboard_settings()
+{
+    register_setting('exit_intent_popup_settings', 'exit_intent_enable_popup');
+    register_setting('exit_intent_popup_settings', 'exit_intent_title', 'wp_kses_post');
+    register_setting('exit_intent_popup_settings', 'exit_intent_custom_content', 'wp_kses_post');
 
 }
-add_action('wp_enqueue_scripts', 'exit_intent_popup_enqueue_scripts');
+add_action('admin_init', 'emg_eip_dashboard_settings');
+
+
 
 
 
@@ -114,82 +199,4 @@ function exit_intent_popup_settings_page()
     </div>
     <?php
 }
-
-function exit_intent_popup_display()
-{
-    $enable_popup = get_option('exit_intent_enable_popup', '1');
-    $custom_content = get_option('exit_intent_custom_content');
-    $parentclass = get_option('exit_intent_parent_class');
-
-    if ($enable_popup !== '1') {
-        return;
-    }
-    $title = get_option('exit_intent_title');
-    $allowed_html = [
-        'h1' => [
-            'class' => [],
-        ],
-        'h2' => [
-            'class' => [],
-        ],
-        'h3' => [
-            'class' => [],
-        ],
-        'h4' => [
-            'class' => [],
-        ],
-        'h5' => [
-            'class' => [],
-        ],
-        'h6' => [
-            'class' => [],
-        ],
-        'p' => [
-            'class' => [],
-        ],
-        'div' => [
-            'class' => [],
-            'id' => [],
-        ],
-        'span' => [
-            'class' => [],
-            'style' => [],
-        ],
-        'a' => [
-            'href' => [],
-            'title' => [],
-            'class' => [],
-        ],
-        'strong' => [],
-        'i' => [],
-        'br' => [],
-    ];
-    ?>
-    <div class="modal exit-intent-pop-up <?php echo esc_attr($parentclass); ?>" id="exitIntentPopup">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="modal-chose-button" data-dismiss="modal" aria-label="Close">X</button>
-                </div>
-                <div class="modal-body">
-                    <?php
-                    if (!empty($custom_content)) {
-                        ?>
-                        <div class="emg-modal-for-custom-content">
-                            <?php
-                            echo wp_kses($title, $allowed_html);
-
-                            echo do_shortcode($custom_content);
-                            ?>
-                        </div>
-                        <?php
-                    } ?>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php
-}
-add_action('wp_footer', 'exit_intent_popup_display');
 

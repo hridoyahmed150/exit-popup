@@ -1,5 +1,4 @@
-/* Basic Modal Styling */
-.modal.exit-intent-pop-up {
+.modal.emg-eip-modal {
   display: none;
   position: fixed;
   top: 0;
@@ -14,7 +13,7 @@
   border: none !important;
 }
 
-.exit-intent-pop-up .modal-dialog {
+.emg-eip-modal .modal-dialog {
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -25,46 +24,53 @@
   margin: 1rem auto;
 }
 
-.exit-intent-pop-up .modal-content {
+.emg-eip-modal .modal-content {
   width: 100%;
   max-height: 100%;
-  padding: 20px;
+  padding: 25px;
   background: #fff;
   position: relative;
   overflow: scroll;
 }
-.exit-intent-pop-up .modal-header {
+.emg-eip-modal .modal-header {
   border: none !important;
   padding: 0 !important;
   position: relative;
 }
 
-.exit-intent-pop-up .modal-header .modal-chose-button {
+.emg-eip-modal .modal-header .modal-close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -15px;
+  right: -15px;
   border: none;
   z-index: 1;
+  cursor: pointer;
 }
 
-.exit-intent-pop-up .modal-body h3,
-.exit-intent-pop-up .modal-body h6 {
-  text-align: center;
+.emg-eip-modal .emg-eip-title {
+  margin-bottom: 20px;
+  padding-right: 45px;
 }
 
-.exit-intent-pop-up .pac-container {
-  z-index: 9999999999 !important; /* Set higher than your modal z-index */
+.emg-eip-modal .emg-eip-title * {
+  font-size: 26px;
+}
+
+.emg-eip-modal .modal-body {
+  padding: 0;
+}
+
+.emg-eip-modal .pac-container {
+  z-index: 9999999999 !important;
 }
 
 .pac-container.pac-logo {
-  z-index: 9999999999 !important; /* Set higher than your modal z-index */
+  z-index: 9999999999 !important;
 }
 
 @media (min-width: 576px) {
-  .exit-intent-pop-up .emg-modal-for-custom-content {
+  .emg-eip-modal .emg-modal-for-custom-content {
     max-width: 650px !important;
-    margin: 1rem auto;
+    margin: 0 auto;
   }
 }
-
-/* Add your other styles for the modal, form, etc. */
